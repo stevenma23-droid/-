@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
-  <title>小罐子直播间专用翻牌器 - 背景保存版</title>
+  <title>小罐子直播间专用翻牌器 - 最终极速版</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -144,6 +144,7 @@
       padding: 0.8rem 2.5rem;
       box-shadow: 0 0 20px rgba(255,152,0,0.4);
     }
+    /* 欧皇按钮光效缩小，仅周围泛光 */
     .ouhuang-btn {
       background: linear-gradient(135deg, #ffd700, #ffaa00);
       border-color: #ffcc80;
@@ -176,6 +177,7 @@
       border: 1px dashed rgba(255,255,255,0.2);
       transition: all 0.2s;
     }
+    /* 欧皇掉落物动画 - 加快下落速度，仅元素周围带微光 */
     .celebration-item {
       position: fixed;
       pointer-events: none;
@@ -249,7 +251,7 @@
     </div>
   </div>
 
-  <!-- 自定义上方文字 -->
+  <!-- 自定义上方文字 (大小+颜色) -->
   <div class="panel">
     <div class="control-group" style="flex:1;">
       <label>📝 牌阵上方文字</label>
@@ -267,21 +269,21 @@
     <button id="applyTopTextBtn">✅ 显示并应用样式</button>
   </div>
 
-  <!-- 背景设置（现在会保存到卡组中） -->
+  <!-- 背景设置 -->
   <div class="panel">
     <div class="control-group">
-      <label>🎨 网页背景颜色</label>
+      <label>🎨 背景颜色</label>
       <input type="color" id="bgColor" value="#17212b">
       <div class="color-preview" id="bgColorPreview" style="background-color:#17212b;"></div>
     </div>
     <div class="control-group">
-      <label>🖼️ 网页背景图片</label>
+      <label>🖼️ 本地图片</label>
       <input type="file" id="bgImageFile" accept="image/*">
     </div>
-    <button id="applyBgBtn">🔄 应用并保存背景</button>
+    <button id="applyBgBtn">🔄 应用背景</button>
   </div>
 
-  <!-- 语音与音效选择 -->
+  <!-- 语音与音效选择（翻牌音效丰富、打乱音效16种） -->
   <div class="panel">
     <div class="control-group" style="flex:1;">
       <label>📢 加油语音 (输入文字)</label>
@@ -289,65 +291,88 @@
     </div>
     <button id="playCheerBtn" style="background:#e91e63;">🔊 播放语音</button>
     <div class="control-group">
-      <label>🔔 翻牌音效</label>
+      <label>🔔 翻牌音效 (更长+鸟叫/风铃)</label>
       <select id="flipSoundSelect">
         <option value="click">咔嗒(长)</option>
         <option value="ding">叮咚(长)</option>
         <option value="pop">气泡(长)</option>
+        <option value="cough">咳嗽声</option>
+        <option value="knock">敲门声</option>
         <option value="coin">硬币(长)</option>
         <option value="bell">铃铛(长)</option>
+        <option value="cling">清脆叮(长)</option>
+        <option value="swish">唰(长)</option>
+        <option value="buzz">蜂鸣(长)</option>
+        <option value="laser">激光(长)</option>
+        <option value="bubble">泡泡(长)</option>
+        <option value="woodblock">木块(长)</option>
+        <option value="glass">玻璃(长)</option>
+        <option value="ding2">高音叮(长)</option>
+        <option value="camera">快门(长)</option>
+        <option value="drop">水滴(长)</option>
+        <option value="silent">静音</option>
         <option value="bird1">🐦 小鸟叫声1</option>
         <option value="bird2">🐦 小鸟叫声2</option>
         <option value="chime">🔔 清脆风铃</option>
         <option value="tinkle">✨ 叮当响声</option>
-        <option value="silent">静音</option>
       </select>
     </div>
     <div class="control-group">
-      <label>🎰 打乱音效</label>
+      <label>🎰 打乱音效 (16款)</label>
       <select id="shuffleSoundSelect">
-        <option value="shuffleCard">🃏 洗牌声</option>
-        <option value="piano1">🎹 钢琴音</option>
+        <option value="shuffleCard">🃏 洗牌声1</option>
+        <option value="shuffleCard2">🃏 洗牌声2</option>
+        <option value="piano1">🎹 钢琴音1</option>
+        <option value="piano2">🎹 钢琴音2</option>
         <option value="rub">✋ 搓牌声</option>
+        <option value="page">📄 翻书声</option>
+        <option value="zip">🤐 拉链声</option>
+        <option value="chip">💎 筹码碰撞</option>
         <option value="magic">✨ 魔法叮当</option>
-        <option value="silent">静音</option>
+        <option value="crystal">🔮 水晶铃声</option>
+        <option value="swoosh">🌬️ 疾风</option>
+        <option value="rattle">🎲 骰子滚动</option>
+        <option value="wind">🍃 微风</option>
+        <option value="tap">👆 轻敲</option>
+        <option value="slide">📇 滑动声</option>
+        <option value="silent">🔇 静音</option>
       </select>
     </div>
     <button id="toggleSoundBtn">🔊 总音效开关</button>
     <span id="soundStatus" style="font-size:0.85rem; color:#bdd3f0;">开</span>
   </div>
 
-  <!-- 尺寸与颜色 -->
+  <!-- 尺寸与颜色 (含正面背景图片上传) -->
   <div class="panel">
     <div class="control-group"><label>📏 宽</label><input type="number" id="cardWidth" value="120" min="60" max="300"></div>
     <div class="control-group"><label>📏 高</label><input type="number" id="cardHeight" value="150" min="60" max="350"></div>
     <div class="control-group"><label>🔤 字号</label><input type="number" id="fontSize" value="18" min="10" max="60"></div>
     <div class="control-group">
       <label>🎨 正面底色</label>
-      <input type="color" id="frontBgColor" value="#4f7eb3">
+      <input type="color" id="frontBgColor" value="#4f7eb3" onchange="updateColorPreviews()">
       <div class="color-preview" id="frontBgColorPreview" style="background-color:#4f7eb3;"></div>
     </div>
     <div class="control-group">
       <label>🔤 正面字色</label>
-      <input type="color" id="frontTextColor" value="#ffffff">
+      <input type="color" id="frontTextColor" value="#ffffff" onchange="updateColorPreviews()">
       <div class="color-preview" id="frontTextColorPreview" style="background-color:#ffffff;"></div>
     </div>
     <div class="control-group">
       <label>🎨 背面底色</label>
-      <input type="color" id="backBgColor" value="#2e3b4e">
+      <input type="color" id="backBgColor" value="#2e3b4e" onchange="updateColorPreviews()">
       <div class="color-preview" id="backBgColorPreview" style="background-color:#2e3b4e;"></div>
     </div>
     <div class="control-group">
       <label>🔤 背面字色</label>
-      <input type="color" id="backTextColor" value="#f5e6c5">
+      <input type="color" id="backTextColor" value="#f5e6c5" onchange="updateColorPreviews()">
       <div class="color-preview" id="backTextColorPreview" style="background-color:#f5e6c5;"></div>
     </div>
     <div class="control-group">
-      <label>🖼️ 卡牌正面背景图</label>
+      <label>🖼️ 正面背景图</label>
       <input type="file" id="frontBgImageFile" accept="image/*">
       <button id="clearFrontBgImageBtn" style="font-size:0.7rem; padding:0.3rem 0.8rem;">清除图片</button>
     </div>
-    <button id="applyStyleBtn">🔄 应用并保存样式</button>
+    <button id="applyStyleBtn">🔄 应用样式</button>
     <button id="resetAllBtn">↩️ 全部翻回</button>
   </div>
 
@@ -357,7 +382,7 @@
   <!-- 牌阵 -->
   <div class="card-grid" id="cardGrid"></div>
 
-  <!-- 按钮组 -->
+  <!-- 打乱按钮 + 欧皇按钮 + 加油按钮 -->
   <div class="shuffle-btn-container">
     <button id="ouhuangBtn" class="ouhuang-btn">👑 欧皇</button>
     <button id="shuffleBtnLarge" class="shuffle-btn-large">🎰 打 乱 顺 序</button>
@@ -376,14 +401,16 @@
 
 <script>
   (function() {
-    const STORAGE_KEY = 'multiDeckFlips_v15_saveBg';
+    const STORAGE_KEY = 'multiDeckFlips_v14';
     let decks = [];
     let currentDeckId = null;
     let flipLog = [];
     const MAX_LOG = 20;
     let soundEnabled = true;
-    let audioCtx = null;
+    let frontBgImageDataUrl = null;
+
     const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
 
     function initAudio() {
       if (!audioCtx && AudioContext) audioCtx = new AudioContext();
@@ -399,12 +426,13 @@
       document.getElementById('topTextColorPreview').style.backgroundColor = document.getElementById('topTextColor').value;
     }
 
-    // 欧皇特效
+    // ========== 欧皇特效：持续4秒，掉落速度快且连绵不断 ==========
     function burstTreasures() {
       const items = ['👑', '🏆', '🎁', '💎'];
-      const durationMs = 4200;
-      const intervalMs = 16;
-      const totalItems = Math.ceil(durationMs / intervalMs) + 30;
+      const durationMs = 4200;        // 持续4.2秒
+      const intervalMs = 16;           // 每16ms生成一个，约62个/秒
+      const totalItems = Math.ceil(durationMs / intervalMs) + 30; // 约280~300个
+      
       for (let i = 0; i < totalItems; i++) {
         setTimeout(() => {
           const el = document.createElement('div');
@@ -412,80 +440,257 @@
           const randomItem = items[Math.floor(Math.random() * items.length)];
           el.textContent = randomItem;
           el.style.fontSize = (26 + Math.random() * 46) + 'px';
-          el.style.left = Math.random() * window.innerWidth + 'px';
-          el.style.top = (-30 - Math.random() * 150) + 'px';
+          const startX = Math.random() * window.innerWidth;
+          const startY = -30 - Math.random() * 150;
+          el.style.left = startX + 'px';
+          el.style.top = startY + 'px';
+          // 随机水平飘移偏移量（通过自定义属性，但动画已有位移，无需额外）
           document.body.appendChild(el);
-          setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 3500);
+          setTimeout(() => {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, 3500); // 元素生命周期略小于动画时长，避免残留
         }, i * intervalMs);
       }
     }
 
-    // 简化的音效
+    // ========== 翻牌音效（时长延长版，含鸟叫风铃）==========
     function playFlipSound() {
-      if (!soundEnabled || !audioCtx) return;
+      if (!soundEnabled) return;
+      if (!audioCtx) initAudio();
+      if (!audioCtx) return;
       const type = document.getElementById('flipSoundSelect').value;
       if (type === 'silent') return;
       const now = audioCtx.currentTime;
-      const playTone = (freq, duration, gainVal=0.2) => {
+
+      const createLongTone = (freq, duration = 0.7, type='sine', gainVal=0.35) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.type = 'sine';
-        osc.frequency.value = freq;
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
         gain.gain.setValueAtTime(gainVal, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        gain.gain.exponentialRampToValueAtTime(0.008, now + duration);
         osc.start(now);
         osc.stop(now + duration);
       };
-      if (type === 'click') playTone(800, 0.3);
-      else if (type === 'ding') playTone(1200, 0.4);
-      else if (type === 'coin') { playTone(1800, 0.2); setTimeout(()=>playTone(1500,0.2),150); }
-      else if (type === 'bell') { playTone(1000,0.3); setTimeout(()=>playTone(1200,0.3),200); }
-      else if (type === 'bird1') { playTone(2100,0.15); setTimeout(()=>playTone(1800,0.15),150); setTimeout(()=>playTone(2200,0.15),300); }
-      else if (type === 'bird2') { playTone(1300,0.15); setTimeout(()=>playTone(1600,0.15),120); setTimeout(()=>playTone(1400,0.15),250); }
-      else if (type === 'chime') { playTone(1600,0.25); setTimeout(()=>playTone(1800,0.2),80); setTimeout(()=>playTone(2000,0.2),180); }
-      else if (type === 'tinkle') { playTone(1200,0.2); setTimeout(()=>playTone(1500,0.2),150); setTimeout(()=>playTone(1800,0.15),300); }
+      
+      const createBird = (typeBird) => {
+        const times = [0, 0.18, 0.32, 0.5, 0.68];
+        const freqs = typeBird === 'bird1' ? [2100, 1800, 2200, 1900, 2300] : [1300, 1600, 1400, 1700, 1500];
+        times.forEach((delay, idx) => {
+          setTimeout(() => {
+            if (!soundEnabled) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freqs[idx], audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.22);
+          }, delay * 1000);
+        });
+      };
+      
+      const createChime = () => {
+        const baseFreq = 1800;
+        for (let i = 0; i < 4; i++) {
+          setTimeout(() => {
+            if (!soundEnabled) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            const detune = (i * 70) - 105;
+            osc.frequency.setValueAtTime(baseFreq + detune, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.6);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.6);
+          }, i * 60);
+        }
+      };
+      
+      const createTinkle = () => {
+        createLongTone(1200, 0.5, 'sine', 0.3);
+        setTimeout(() => createLongTone(1600, 0.5, 'sine', 0.25), 300);
+        setTimeout(() => createLongTone(2100, 0.4, 'sine', 0.2), 650);
+      };
+      
+      switch(type) {
+        case 'click': createLongTone(880, 0.9, 'sine', 0.35); setTimeout(()=>createLongTone(440, 0.6, 'sine', 0.25), 450); break;
+        case 'ding': createLongTone(1250, 1.1, 'sine', 0.4); setTimeout(()=>createLongTone(1550, 0.8, 'sine', 0.3), 500); break;
+        case 'pop': createLongTone(420, 0.8, 'triangle', 0.45); break;
+        case 'cough': 
+          for(let i=0;i<2;i++){setTimeout(()=>{const gain=audioCtx.createGain(); const bufferSize=audioCtx.sampleRate*0.5; const buffer=audioCtx.createBuffer(1,bufferSize,audioCtx.sampleRate); const data=buffer.getChannelData(0); for(let i=0;i<bufferSize;i++) data[i]=Math.random()*2-1; const src=audioCtx.createBufferSource(); src.buffer=buffer; src.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.25,audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.5); src.start(); src.stop(audioCtx.currentTime+0.5);},i*700);} break;
+        case 'knock': for(let i=0;i<4;i++){setTimeout(()=>createLongTone(180,0.25,'sine',0.45),i*280);} break;
+        case 'coin': createLongTone(2100, 0.6, 'sine', 0.35); setTimeout(()=>createLongTone(1850, 0.5, 'sine', 0.3), 180); setTimeout(()=>createLongTone(1600, 0.5, 'sine', 0.25), 420); break;
+        case 'bell': createLongTone(850, 1.0, 'sine', 0.28); setTimeout(()=>createLongTone(1050, 0.9, 'sine', 0.22), 500); break;
+        case 'cling': createLongTone(1680, 1.1, 'triangle', 0.35); break;
+        case 'swish': 
+          const noiseDur=0.7; const buffer=audioCtx.createBuffer(1,audioCtx.sampleRate*noiseDur,audioCtx.sampleRate); const data=buffer.getChannelData(0); for(let i=0;i<buffer.length;i++) data[i]=Math.random()*2-1; const src=audioCtx.createBufferSource(); src.buffer=buffer; const gain=audioCtx.createGain(); src.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.3,now); gain.gain.exponentialRampToValueAtTime(0.005,now+noiseDur); src.start(now); src.stop(now+noiseDur); break;
+        case 'buzz': createLongTone(230, 1.2, 'square', 0.2); break;
+        case 'laser':
+          const oscL=audioCtx.createOscillator(); const gainL=audioCtx.createGain();
+          oscL.connect(gainL); gainL.connect(audioCtx.destination);
+          oscL.type='sawtooth'; oscL.frequency.setValueAtTime(880,now); oscL.frequency.exponentialRampToValueAtTime(180,now+0.9);
+          gainL.gain.setValueAtTime(0.25,now); gainL.gain.exponentialRampToValueAtTime(0.005,now+0.9);
+          oscL.start(now); oscL.stop(now+0.9); break;
+        case 'bubble': createLongTone(620, 0.9, 'sine', 0.35); setTimeout(()=>createLongTone(510, 0.6, 'sine', 0.3), 400); break;
+        case 'woodblock': createLongTone(320, 0.7, 'triangle', 0.55); break;
+        case 'glass': createLongTone(2150, 1.2, 'sine', 0.25); break;
+        case 'ding2': createLongTone(1950, 1.0, 'sine', 0.4); break;
+        case 'camera': 
+          const noiseC=audioCtx.createBufferSource(); const bufC=audioCtx.createBuffer(1,audioCtx.sampleRate*0.4,audioCtx.sampleRate); const datC=bufC.getChannelData(0); for(let i=0;i<bufC.length;i++) datC[i]=Math.random()*2-1; noiseC.buffer=bufC; const GainC=audioCtx.createGain(); noiseC.connect(GainC); GainC.connect(audioCtx.destination); GainC.gain.setValueAtTime(0.3,now); GainC.gain.exponentialRampToValueAtTime(0.01,now+0.4); noiseC.start(now); noiseC.stop(now+0.4); setTimeout(()=>createLongTone(1100,0.5,'sine',0.3), 200); break;
+        case 'drop': createLongTone(680, 0.7, 'sine', 0.3); setTimeout(()=>createLongTone(480, 0.6, 'sine', 0.2), 250); break;
+        case 'bird1': createBird('bird1'); break;
+        case 'bird2': createBird('bird2'); break;
+        case 'chime': createChime(); break;
+        case 'tinkle': createTinkle(); break;
+        default: break;
+      }
     }
 
+    // ========== 打乱音效：16种，时长适中 ==========
     function playShuffleSound() {
       if (!soundEnabled || !audioCtx) return;
       const type = document.getElementById('shuffleSoundSelect').value;
       if (type === 'silent') return;
       const now = audioCtx.currentTime;
-      const playTone = (freq, duration, gainVal=0.15) => {
+      
+      const playTone = (freq, duration, gainVal=0.25, waveform='sine') => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.type = 'sine';
+        osc.type = waveform;
         osc.frequency.value = freq;
         gain.gain.setValueAtTime(gainVal, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
         osc.start(now);
         osc.stop(now + duration);
       };
-      if (type === 'shuffleCard') {
-        for (let i=0;i<8;i++) setTimeout(()=>playTone(600+Math.random()*400,0.08), i*40);
-      } else if (type === 'piano1') {
-        [523,587,659,523].forEach((f,idx)=>setTimeout(()=>playTone(f,0.2), idx*120));
-      } else if (type === 'rub') {
-        playTone(300,0.3);
-      } else if (type === 'magic') {
-        playTone(1200,0.25); setTimeout(()=>playTone(1600,0.2),150);
+      
+      const playNoise = (duration, intensity=0.2) => {
+        const bufferSize = audioCtx.sampleRate * duration;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        const gain = audioCtx.createGain();
+        source.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(intensity, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        source.start(now);
+        source.stop(now + duration);
+      };
+      
+      switch(type) {
+        case 'shuffleCard':
+          for (let i = 0; i < 8; i++) {
+            setTimeout(() => playNoise(0.08, 0.15), i * 45);
+            setTimeout(() => playTone(600 + Math.random()*400, 0.1, 0.12, 'triangle'), i * 45);
+          }
+          break;
+        case 'shuffleCard2':
+          for (let i = 0; i < 12; i++) {
+            setTimeout(() => playNoise(0.05, 0.1), i * 35);
+            setTimeout(() => playTone(500 + Math.random()*500, 0.08, 0.1, 'sawtooth'), i * 35);
+          }
+          break;
+        case 'piano1':
+          [523, 587, 659, 523, 494, 440].forEach((f, idx) => setTimeout(() => playTone(f, 0.25, 0.2, 'sine'), idx * 120));
+          break;
+        case 'piano2':
+          [392, 440, 494, 523, 587, 523].forEach((f, idx) => setTimeout(() => playTone(f, 0.2, 0.2, 'sine'), idx * 100));
+          break;
+        case 'rub':
+          playNoise(0.4, 0.25);
+          for (let i = 0; i < 3; i++) setTimeout(() => playTone(300, 0.12, 0.15, 'triangle'), i * 80);
+          break;
+        case 'page':
+          playNoise(0.25, 0.18);
+          setTimeout(() => playTone(800, 0.12, 0.12, 'sine'), 100);
+          break;
+        case 'zip':
+          for (let i = 0; i < 10; i++) setTimeout(() => playTone(1200 - i*70, 0.04, 0.1, 'sawtooth'), i * 30);
+          break;
+        case 'chip':
+          for (let i = 0; i < 6; i++) setTimeout(() => { playTone(1800, 0.12, 0.18, 'sine'); playTone(1600, 0.1, 0.15, 'sine'); }, i * 70);
+          break;
+        case 'magic':
+          playTone(1200, 0.3, 0.2, 'sine');
+          setTimeout(() => playTone(1600, 0.25, 0.18, 'sine'), 150);
+          setTimeout(() => playTone(2000, 0.2, 0.15, 'sine'), 300);
+          break;
+        case 'crystal':
+          for (let i = 0; i < 5; i++) setTimeout(() => playTone(1400 + i*180, 0.22, 0.16, 'sine'), i * 90);
+          break;
+        case 'swoosh':
+          playNoise(0.35, 0.2);
+          break;
+        case 'rattle':
+          for (let i = 0; i < 10; i++) setTimeout(() => playNoise(0.05, 0.12), i * 40);
+          break;
+        case 'wind':
+          const windOsc = audioCtx.createOscillator();
+          const windGain = audioCtx.createGain();
+          windOsc.connect(windGain);
+          windGain.connect(audioCtx.destination);
+          windOsc.type = 'sine';
+          windOsc.frequency.setValueAtTime(180, now);
+          windOsc.frequency.exponentialRampToValueAtTime(80, now+0.8);
+          windGain.gain.setValueAtTime(0.2, now);
+          windGain.gain.exponentialRampToValueAtTime(0.001, now+0.8);
+          windOsc.start(now);
+          windOsc.stop(now+0.8);
+          break;
+        case 'tap':
+          for (let i = 0; i < 5; i++) setTimeout(() => playTone(300 + i*150, 0.06, 0.2, 'triangle'), i * 70);
+          break;
+        case 'slide':
+          const slideOsc = audioCtx.createOscillator();
+          const slideGain = audioCtx.createGain();
+          slideOsc.connect(slideGain);
+          slideGain.connect(audioCtx.destination);
+          slideOsc.type = 'sawtooth';
+          slideOsc.frequency.setValueAtTime(220, now);
+          slideOsc.frequency.exponentialRampToValueAtTime(800, now+0.4);
+          slideGain.gain.setValueAtTime(0.15, now);
+          slideGain.gain.exponentialRampToValueAtTime(0.001, now+0.4);
+          slideOsc.start(now);
+          slideOsc.stop(now+0.4);
+          break;
+        default: break;
       }
     }
 
     function speakCheer() {
       if (!soundEnabled) return;
+      initAudio();
       const text = document.getElementById('cheerText').value.trim();
-      if (!text) return alert('请输入文字');
+      if (!text) { alert('请先在语音框中输入文字'); return; }
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN';
+        utterance.lang = 'zh-TW'; utterance.rate = 0.9; utterance.pitch = 1.2;
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoice = voices.find(v => v.lang.startsWith('zh') && v.name.includes('Female')) || 
+                            voices.find(v => v.lang.startsWith('zh-TW')) || voices.find(v => v.lang.startsWith('zh'));
+        if (femaleVoice) utterance.voice = femaleVoice;
         window.speechSynthesis.speak(utterance);
-      }
+      } else { alert(text); }
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
 
     // DOM 元素
@@ -538,21 +743,10 @@
       const backContents = Array(count).fill('?');
       const backAssign = [...backContents];
       const flipped = Array(count).fill(false);
-      decks.push({ 
-        id, name, cardCount: count, backContents, backAssign, flipped, 
-        customTopText: '', topTextFontSize: 35, topTextColor: '#f0e6c5',
-        // 新增背景保存字段
-        cardFrontBgImage: null,      // 存储正面背景图的DataURL
-        webBgColor: '#17212b',       // 网页背景颜色
-        webBgImage: null,            // 网页背景图片DataURL
-        cardWidth: 120, cardHeight: 150, cardFontSize: 18,
-        frontBgColor: '#4f7eb3', frontTextColor: '#ffffff',
-        backBgColor: '#2e3b4e', backTextColor: '#f5e6c5'
-      });
+      decks.push({ id, name, cardCount: count, backContents, backAssign, flipped, customTopText: '', topTextFontSize: 35, topTextColor: '#f0e6c5' });
       saveDecks();
       return id;
     }
-
     function deleteDeck(id) {
       decks = decks.filter(d => d.id != id);
       if (currentDeckId == id) currentDeckId = decks.length ? decks[0].id : null;
@@ -560,9 +754,7 @@
       if (!currentDeckId) createDeck();
       refreshUI();
     }
-
     function renameDeck(id, newName) { const deck = decks.find(d => d.id == id); if (deck) { deck.name = newName; saveDecks(); } }
-
     function shuffleBackAssign(deck) {
       const arr = [...deck.backContents];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -573,7 +765,6 @@
       deck.flipped = Array(deck.cardCount).fill(false);
       saveDecks();
     }
-
     function addLog(msg) {
       const time = new Date().toLocaleTimeString();
       flipLog.unshift(`[${time}] ${msg}`);
@@ -589,7 +780,6 @@
         addLog(`🎯 全部翻开汇总：${summary}`);
       }
     }
-
     function toggleCard(index) {
       const deck = currentDeck();
       if (!deck || index < 0 || index >= deck.cardCount) return;
@@ -602,7 +792,6 @@
       saveDecks();
       checkAllFlippedAndRecord(deck);
     }
-
     function renderDeckSelect() {
       deckSelect.innerHTML = '';
       decks.forEach(deck => {
@@ -613,77 +802,6 @@
       });
       if (currentDeckId) deckSelect.value = currentDeckId;
     }
-
-    // 应用网页背景（从卡组数据恢复）
-    function applyWebBackground() {
-      const deck = currentDeck();
-      if (!deck) return;
-      if (deck.webBgImage) {
-        document.body.style.background = `url(${deck.webBgImage}) center/cover no-repeat`;
-        document.body.style.backgroundColor = deck.webBgColor || '#17212b';
-      } else {
-        document.body.style.background = deck.webBgColor || '#17212b';
-      }
-      bgColorInput.value = deck.webBgColor || '#17212b';
-      document.getElementById('bgColorPreview').style.backgroundColor = deck.webBgColor || '#17212b';
-    }
-
-    // 保存网页背景到当前卡组
-    function saveWebBackground() {
-      const deck = currentDeck();
-      if (!deck) return;
-      const color = bgColorInput.value;
-      deck.webBgColor = color;
-      const file = bgImageFile.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          deck.webBgImage = e.target.result;
-          document.body.style.background = `url(${deck.webBgImage}) center/cover no-repeat`;
-          document.body.style.backgroundColor = color;
-          saveDecks();
-          addLog('网页背景已保存');
-        };
-        reader.readAsDataURL(file);
-      } else {
-        deck.webBgImage = null;
-        document.body.style.background = color;
-        saveDecks();
-        addLog('网页背景颜色已保存');
-      }
-    }
-
-    // 应用卡牌样式（从卡组数据恢复）
-    function applyCardStyles() {
-      const deck = currentDeck();
-      if (!deck) return;
-      widthInput.value = deck.cardWidth || 120;
-      heightInput.value = deck.cardHeight || 150;
-      fontSizeInput.value = deck.cardFontSize || 18;
-      frontBgColorInput.value = deck.frontBgColor || '#4f7eb3';
-      frontTextColorInput.value = deck.frontTextColor || '#ffffff';
-      backBgColorInput.value = deck.backBgColor || '#2e3b4e';
-      backTextColorInput.value = deck.backTextColor || '#f5e6c5';
-      updateColorPreviews();
-      renderCards();
-    }
-
-    // 保存卡牌样式到当前卡组
-    function saveCardStyles() {
-      const deck = currentDeck();
-      if (!deck) return;
-      deck.cardWidth = parseInt(widthInput.value,10) || 120;
-      deck.cardHeight = parseInt(heightInput.value,10) || 150;
-      deck.cardFontSize = parseInt(fontSizeInput.value,10) || 18;
-      deck.frontBgColor = frontBgColorInput.value;
-      deck.frontTextColor = frontTextColorInput.value;
-      deck.backBgColor = backBgColorInput.value;
-      deck.backTextColor = backTextColorInput.value;
-      saveDecks();
-      renderCards();
-      addLog('卡牌样式已保存');
-    }
-
     function refreshUI() {
       renderDeckSelect();
       const deck = currentDeck();
@@ -695,35 +813,31 @@
       customTopTextInput.value = deck.customTopText || '';
       topTextFontSize.value = deck.topTextFontSize || 35;
       topTextColor.value = deck.topTextColor || '#f0e6c5';
-      
-      // 恢复文字样式
-      customTextDisplay.style.fontSize = (deck.topTextFontSize || 35) + 'px';
-      customTextDisplay.style.color = deck.topTextColor || '#f0e6c5';
-      customTextDisplay.textContent = deck.customTopText || '';
-      
-      // 恢复卡牌样式
-      applyCardStyles();
-      // 恢复网页背景
-      applyWebBackground();
-      
+      updateTopTextStyle();
       flipLog = [];
       renderLog();
       renderCards();
     }
-
-    function getStyle() {
+    function updateTopTextStyle() {
       const deck = currentDeck();
+      if (!deck) return;
+      const fontSize = deck.topTextFontSize || 35;
+      const color = deck.topTextColor || '#f0e6c5';
+      customTextDisplay.style.fontSize = fontSize + 'px';
+      customTextDisplay.style.color = color;
+      customTextDisplay.textContent = deck.customTopText || '';
+    }
+    function getStyle() {
       return {
-        width: deck?.cardWidth || 120,
-        height: deck?.cardHeight || 150,
-        fontSize: deck?.cardFontSize || 18,
-        frontBgColor: deck?.frontBgColor || '#4f7eb3',
-        frontTextColor: deck?.frontTextColor || '#ffffff',
-        backBgColor: deck?.backBgColor || '#2e3b4e',
-        backTextColor: deck?.backTextColor || '#f5e6c5'
+        width: parseInt(widthInput.value,10) || 120,
+        height: parseInt(heightInput.value,10) || 150,
+        fontSize: parseInt(fontSizeInput.value,10) || 18,
+        frontBgColor: frontBgColorInput.value,
+        frontTextColor: frontTextColorInput.value,
+        backBgColor: backBgColorInput.value,
+        backTextColor: backTextColorInput.value
       };
     }
-
     function renderCards() {
       const deck = currentDeck();
       if (!deck) { cardGrid.innerHTML = ''; return; }
@@ -737,8 +851,8 @@
         cardDiv.style.height = style.height + 'px';
         if (deck.flipped[i]) cardDiv.classList.add('flipped');
         let frontBackground = style.frontBgColor;
-        if (deck.cardFrontBgImage) {
-          frontBackground = `url(${deck.cardFrontBgImage}) center/cover no-repeat, ${style.frontBgColor}`;
+        if (frontBgImageDataUrl) {
+          frontBackground = `url(${frontBgImageDataUrl}) center/cover no-repeat, ${style.frontBgColor}`;
         }
         cardDiv.innerHTML = `
           <div class="flip-inner">
@@ -750,7 +864,6 @@
         cardGrid.appendChild(cardDiv);
       }
     }
-
     function playShuffleAnimation(callback) {
       initAudio();
       playShuffleSound();
@@ -761,7 +874,6 @@
         if (callback) callback();
       }, cards.length * 30 + 500);
     }
-
     function executeShuffle() {
       const deck = currentDeck();
       if (!deck) return;
@@ -772,7 +884,6 @@
         addLog('🎰 背面内容已打乱');
       });
     }
-
     function syncCountAndContents() {
       const deck = currentDeck();
       if (!deck) return;
@@ -790,7 +901,6 @@
       saveDecks();
       renderCards();
     }
-
     function updateBackFromArea() {
       const deck = currentDeck();
       if (!deck) return;
@@ -802,7 +912,20 @@
       contentCountHint.textContent = `已输入 ${deck.backContents.length} 行，需要 ${deck.cardCount} 行`;
       saveDecks();
     }
-
+    function applyBackground() {
+      const color = bgColorInput.value;
+      const file = bgImageFile.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.body.style.background = `url(${e.target.result}) center/cover no-repeat`;
+          document.body.style.backgroundColor = color;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        document.body.style.background = color;
+      }
+    }
     function generateShareLink() {
       const data = { decks, currentDeckId };
       const json = JSON.stringify(data);
@@ -813,7 +936,6 @@
         addLog('分享链接已复制');
       }).catch(() => prompt('复制以下链接：', url));
     }
-
     function loadFromHash() {
       const hash = window.location.hash;
       if (hash.startsWith('#data=')) {
@@ -832,32 +954,25 @@
       }
     }
 
-    // 正面背景图片保存到卡组
+    // 正面背景图片
     frontBgImageFileInput.addEventListener('change', (e) => {
-      const deck = currentDeck();
-      if (!deck) return;
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(ev) {
-          deck.cardFrontBgImage = ev.target.result;
-          saveDecks();
+          frontBgImageDataUrl = ev.target.result;
           renderCards();
-          addLog('卡牌正面背景图已保存');
         };
         reader.readAsDataURL(file);
       }
     });
     clearFrontBgImageBtn.addEventListener('click', () => {
-      const deck = currentDeck();
-      if (!deck) return;
-      deck.cardFrontBgImage = null;
+      frontBgImageDataUrl = null;
       frontBgImageFileInput.value = '';
-      saveDecks();
       renderCards();
-      addLog('卡牌正面背景图已清除');
     });
 
+    // 牌阵上方文字样式应用
     function applyTopTextWithStyle() {
       const deck = currentDeck();
       if (!deck) return;
@@ -865,11 +980,10 @@
       deck.topTextFontSize = parseInt(topTextFontSize.value, 10) || 35;
       deck.topTextColor = topTextColor.value;
       saveDecks();
-      customTextDisplay.style.fontSize = deck.topTextFontSize + 'px';
-      customTextDisplay.style.color = deck.topTextColor;
-      customTextDisplay.textContent = deck.customTopText || '';
+      updateTopTextStyle();
       addLog(`上方文字已更新: ${deck.customTopText || '(空)'}`);
     }
+    applyTopTextBtn.addEventListener('click', applyTopTextWithStyle);
     
     function previewTopText() {
       const fontSize = parseInt(topTextFontSize.value, 10) || 35;
@@ -878,53 +992,38 @@
       customTextDisplay.style.color = color;
       customTextDisplay.textContent = customTopTextInput.value.trim() || '';
     }
+    topTextFontSize.addEventListener('input', previewTopText);
+    topTextColor.addEventListener('input', previewTopText);
+    customTopTextInput.addEventListener('input', previewTopText);
 
     // 事件绑定
     deckSelect.addEventListener('change', () => { currentDeckId = deckSelect.value; refreshUI(); });
     newDeckBtn.addEventListener('click', () => { const name = prompt('卡组名称：', '新卡组'); if (!name) return; currentDeckId = createDeck(name, 9); refreshUI(); });
     renameDeckBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; const newName = prompt('新名称：', deck.name); if (newName) { renameDeck(deck.id, newName); refreshUI(); } });
     deleteDeckBtn.addEventListener('click', () => { if (decks.length <= 1) { alert('至少保留一个卡组'); return; } const deck = currentDeck(); if (deck && confirm(`删除“${deck.name}”？`)) { deleteDeck(deck.id); refreshUI(); } });
-    saveDeckBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; updateBackFromArea(); deck.name = deckNameInput.value; applyTopTextWithStyle(); saveCardStyles(); saveWebBackground(); saveDecks(); alert('卡组已保存！'); refreshUI(); });
+    saveDeckBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; updateBackFromArea(); deck.name = deckNameInput.value; applyTopTextWithStyle(); saveDecks(); alert('卡组已保存！'); refreshUI(); });
     shuffleBtnLarge.addEventListener('click', executeShuffle);
     ouhuangBtn.addEventListener('click', burstTreasures);
-    applyStyleBtn.addEventListener('click', () => { saveCardStyles(); });
+    applyStyleBtn.addEventListener('click', () => { updateColorPreviews(); renderCards(); });
     resetAllBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; deck.flipped = Array(deck.cardCount).fill(false); saveDecks(); renderCards(); addLog('全部翻回'); });
     clearLogBtn.addEventListener('click', clearLog);
     shareLinkBtn.addEventListener('click', generateShareLink);
-    applyBgBtn.addEventListener('click', saveWebBackground);
+    applyBgBtn.addEventListener('click', applyBackground);
     playCheerBtn.addEventListener('click', speakCheer);
     cheerBtnRight.addEventListener('click', speakCheer);
     toggleSoundBtn.addEventListener('click', () => { soundEnabled = !soundEnabled; soundStatus.textContent = soundEnabled ? '开' : '关'; toggleSoundBtn.textContent = soundEnabled ? '🔊 总音效开关' : '🔇 总音效开关'; });
     cardCountInput.addEventListener('change', syncCountAndContents);
     backContentsArea.addEventListener('blur', updateBackFromArea);
     deckNameInput.addEventListener('change', () => { const deck = currentDeck(); if (deck) { deck.name = deckNameInput.value; saveDecks(); renderDeckSelect(); } });
-    applyTopTextBtn.addEventListener('click', applyTopTextWithStyle);
-    topTextFontSize.addEventListener('input', previewTopText);
-    topTextColor.addEventListener('input', previewTopText);
-    customTopTextInput.addEventListener('input', previewTopText);
 
     updateColorPreviews();
+    bgColorInput.addEventListener('input', () => { document.getElementById('bgColorPreview').style.backgroundColor = bgColorInput.value; });
     document.addEventListener('click', initAudio, { once: true });
 
     function init() {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        try { 
-          decks = JSON.parse(stored);
-          // 确保旧数据有新增字段
-          decks.forEach(deck => {
-            if (deck.cardFrontBgImage === undefined) deck.cardFrontBgImage = null;
-            if (deck.webBgColor === undefined) deck.webBgColor = '#17212b';
-            if (deck.webBgImage === undefined) deck.webBgImage = null;
-            if (deck.cardWidth === undefined) deck.cardWidth = 120;
-            if (deck.cardHeight === undefined) deck.cardHeight = 150;
-            if (deck.cardFontSize === undefined) deck.cardFontSize = 18;
-            if (deck.frontBgColor === undefined) deck.frontBgColor = '#4f7eb3';
-            if (deck.frontTextColor === undefined) deck.frontTextColor = '#ffffff';
-            if (deck.backBgColor === undefined) deck.backBgColor = '#2e3b4e';
-            if (deck.backTextColor === undefined) deck.backTextColor = '#f5e6c5';
-          });
-        } catch(e) { decks = []; }
+        try { decks = JSON.parse(stored); } catch(e) { decks = []; }
       }
       if (!decks.length) {
         currentDeckId = createDeck('示例卡组', 9);
