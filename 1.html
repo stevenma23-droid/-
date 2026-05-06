@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+  <title>小罐子直播间专用翻牌器 - 最终极速版</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(155deg, #17212b 0%, #0b1117 100%);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 1.5rem;
+      color: #eef5ff;
+      transition: background 0.5s ease;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border-radius: 3rem;
+      padding: 2rem 2.2rem 2.5rem;
+      box-shadow: 0 30px 55px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    .panel {
+      background: rgba(18, 26, 36, 0.7);
+      backdrop-filter: blur(16px);
+      border-radius: 2.5rem;
+      padding: 1.8rem 2rem;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem 2rem;
+      align-items: flex-end;
+    }
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.8rem;
+      perspective: 1000px;
+      min-height: 80px;
+    }
+    .flip-card {
+      cursor: pointer;
+      user-select: none;
+      transition: filter 0.2s, transform 0.3s ease;
+    }
+    .flip-card:hover { filter: drop-shadow(0 10px 16px rgba(0,160,255,0.3)); }
+    .flip-card.shuffling {
+      animation: shuffleAnimation 0.5s ease-in-out;
+    }
+    @keyframes shuffleAnimation {
+      0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      25% { transform: translateY(-20px) rotate(-5deg) scale(0.9); opacity: 0.8; }
+      50% { transform: translateY(-10px) rotate(5deg) scale(1.05); opacity: 0.9; }
+      75% { transform: translateY(-5px) rotate(-3deg) scale(0.95); opacity: 1; }
+      100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.45s cubic-bezier(0.23,1,0.32,1);
+      transform-style: preserve-3d;
+      border-radius: 1rem;
+    }
+    .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      padding: 0.5rem;
+      word-break: break-word;
+      line-height: 1.3;
+      box-shadow: 0 15px 22px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .flip-back { transform: rotateY(180deg); }
+    .control-group { display: flex; flex-direction: column; gap: 0.4rem; min-width: 100px; }
+    .control-group label { font-size: 0.75rem; text-transform: uppercase; color: #b4c8e0; }
+    input, select, textarea {
+      background: rgba(10, 18, 28, 0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 1.5rem;
+      padding: 0.6rem 1.1rem;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      backdrop-filter: blur(8px);
+    }
+    textarea { resize: vertical; border-radius: 1.2rem; font-family: inherit; }
+    .color-preview {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.5);
+      margin-top: 6px;
+      align-self: center;
+      box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    }
+    button {
+      background: rgba(35, 55, 80, 0.8);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
+      white-space: nowrap;
+    }
+    button:hover { background: #3b5c82; border-color: #8ab3ff; }
+    .shuffle-btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .shuffle-btn-large {
+      background: #ff9800;
+      border-color: #ffb74d;
+      font-size: 1.2rem;
+      padding: 0.8rem 2.5rem;
+      box-shadow: 0 0 20px rgba(255,152,0,0.4);
+    }
+    /* 欧皇按钮光效缩小，仅周围泛光 */
+    .ouhuang-btn {
+      background: linear-gradient(135deg, #ffd700, #ffaa00);
+      border-color: #ffcc80;
+      color: #000;
+      font-size: 1.2rem;
+      padding: 0.8rem 2.5rem;
+      box-shadow: 0 0 8px rgba(255,215,0,0.8);
+      text-shadow: 0 0 3px rgba(255,255,255,0.8);
+      animation: subtleGlow 1.2s infinite alternate;
+    }
+    @keyframes subtleGlow {
+      from { box-shadow: 0 0 4px rgba(255,215,0,0.6); }
+      to { box-shadow: 0 0 12px rgba(255,215,0,0.9); }
+    }
+    .log-box {
+      background: rgba(0,0,0,0.4);
+      border-radius: 1.5rem;
+      padding: 1rem;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      color: #bdd3f0;
+    }
+    .custom-text-display {
+      background: rgba(255,255,255,0.08);
+      border-radius: 2rem;
+      padding: 1rem 2rem;
+      text-align: center;
+      word-break: break-word;
+      border: 1px dashed rgba(255,255,255,0.2);
+      transition: all 0.2s;
+    }
+    /* 欧皇掉落物动画 - 加快下落速度，仅元素周围带微光 */
+    .celebration-item {
+      position: fixed;
+      pointer-events: none;
+      z-index: 10000;
+      font-size: 0;
+      animation: dropRotateFast 3.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      filter: drop-shadow(0 0 5px gold) drop-shadow(0 0 2px rgba(255,215,0,0.7));
+      text-shadow: 0 0 5px rgba(255,215,0,0.6);
+    }
+    @keyframes dropRotateFast {
+      0% {
+        transform: translateY(-15vh) translateX(-15px) rotate(0deg) scale(0.4);
+        opacity: 0;
+      }
+      8% {
+        opacity: 1;
+        transform: translateY(-5vh) translateX(8px) rotate(40deg) scale(0.7);
+      }
+      30% {
+        transform: translateY(20vh) translateX(-12px) rotate(150deg) scale(0.95);
+      }
+      60% {
+        transform: translateY(50vh) translateX(18px) rotate(270deg) scale(1.05);
+      }
+      85% {
+        opacity: 0.9;
+        transform: translateY(80vh) translateX(-8px) rotate(380deg) scale(0.9);
+      }
+      100% {
+        transform: translateY(110vh) translateX(25px) rotate(480deg) scale(0.5);
+        opacity: 0;
+      }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 1.2rem; }
+      .custom-text-display { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2 style="margin:-0.5rem 0 0 0; color:#c8dff5;">🃏 小罐子直播间专用翻牌器</h2>
+
+  <!-- 卡组管理 -->
+  <div class="panel">
+    <div class="control-group" style="flex:2;">
+      <label>📚 当前卡组</label>
+      <select id="deckSelect"></select>
+    </div>
+    <button id="newDeckBtn">➕ 新建</button>
+    <button id="renameDeckBtn">✏️ 重命名</button>
+    <button id="deleteDeckBtn">🗑️ 删除</button>
+    <button id="saveDeckBtn" style="background:#4caf8f;">💾 保存卡组</button>
+    <button id="shareLinkBtn" style="background:#ff9800;">🔗 分享链接</button>
+  </div>
+
+  <!-- 卡组设置 -->
+  <div class="panel">
+    <div class="control-group">
+      <label>🏷️ 名称</label>
+      <input type="text" id="deckName" value="我的卡组" maxlength="20">
+    </div>
+    <div class="control-group">
+      <label>🔢 数量</label>
+      <input type="number" id="cardCount" value="9" min="1" max="100" step="1">
+    </div>
+    <div class="control-group" style="flex:2;">
+      <label>🎲 背面内容 (一行一个)</label>
+      <textarea id="backContentsArea" rows="4" placeholder="苹果&#10;香蕉&#10;西瓜&#10;..."></textarea>
+      <span style="font-size:0.75rem;" id="contentCountHint"></span>
+    </div>
+  </div>
+
+  <!-- 自定义上方文字 (大小+颜色) -->
+  <div class="panel">
+    <div class="control-group" style="flex:1;">
+      <label>📝 牌阵上方文字</label>
+      <input type="text" id="customTopText" placeholder="输入展示文字…" maxlength="100">
+    </div>
+    <div class="control-group">
+      <label>🔤 文字大小(px)</label>
+      <input type="number" id="topTextFontSize" value="35" min="12" max="120" step="1">
+    </div>
+    <div class="control-group">
+      <label>🎨 文字颜色</label>
+      <input type="color" id="topTextColor" value="#f0e6c5">
+      <div class="color-preview" id="topTextColorPreview" style="background-color:#f0e6c5;"></div>
+    </div>
+    <button id="applyTopTextBtn">✅ 显示并应用样式</button>
+  </div>
+
+  <!-- 背景设置 -->
+  <div class="panel">
+    <div class="control-group">
+      <label>🎨 背景颜色</label>
+      <input type="color" id="bgColor" value="#17212b">
+      <div class="color-preview" id="bgColorPreview" style="background-color:#17212b;"></div>
+    </div>
+    <div class="control-group">
+      <label>🖼️ 本地图片</label>
+      <input type="file" id="bgImageFile" accept="image/*">
+    </div>
+    <button id="applyBgBtn">🔄 应用背景</button>
+  </div>
+
+  <!-- 语音与音效选择（翻牌音效丰富、打乱音效16种） -->
+  <div class="panel">
+    <div class="control-group" style="flex:1;">
+      <label>📢 加油语音 (输入文字)</label>
+      <input type="text" id="cheerText" value="加油哦，再接再厉" placeholder="输入想播放的文字">
+    </div>
+    <button id="playCheerBtn" style="background:#e91e63;">🔊 播放语音</button>
+    <div class="control-group">
+      <label>🔔 翻牌音效 (更长+鸟叫/风铃)</label>
+      <select id="flipSoundSelect">
+        <option value="click">咔嗒(长)</option>
+        <option value="ding">叮咚(长)</option>
+        <option value="pop">气泡(长)</option>
+        <option value="cough">咳嗽声</option>
+        <option value="knock">敲门声</option>
+        <option value="coin">硬币(长)</option>
+        <option value="bell">铃铛(长)</option>
+        <option value="cling">清脆叮(长)</option>
+        <option value="swish">唰(长)</option>
+        <option value="buzz">蜂鸣(长)</option>
+        <option value="laser">激光(长)</option>
+        <option value="bubble">泡泡(长)</option>
+        <option value="woodblock">木块(长)</option>
+        <option value="glass">玻璃(长)</option>
+        <option value="ding2">高音叮(长)</option>
+        <option value="camera">快门(长)</option>
+        <option value="drop">水滴(长)</option>
+        <option value="silent">静音</option>
+        <option value="bird1">🐦 小鸟叫声1</option>
+        <option value="bird2">🐦 小鸟叫声2</option>
+        <option value="chime">🔔 清脆风铃</option>
+        <option value="tinkle">✨ 叮当响声</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>🎰 打乱音效 (16款)</label>
+      <select id="shuffleSoundSelect">
+        <option value="shuffleCard">🃏 洗牌声1</option>
+        <option value="shuffleCard2">🃏 洗牌声2</option>
+        <option value="piano1">🎹 钢琴音1</option>
+        <option value="piano2">🎹 钢琴音2</option>
+        <option value="rub">✋ 搓牌声</option>
+        <option value="page">📄 翻书声</option>
+        <option value="zip">🤐 拉链声</option>
+        <option value="chip">💎 筹码碰撞</option>
+        <option value="magic">✨ 魔法叮当</option>
+        <option value="crystal">🔮 水晶铃声</option>
+        <option value="swoosh">🌬️ 疾风</option>
+        <option value="rattle">🎲 骰子滚动</option>
+        <option value="wind">🍃 微风</option>
+        <option value="tap">👆 轻敲</option>
+        <option value="slide">📇 滑动声</option>
+        <option value="silent">🔇 静音</option>
+      </select>
+    </div>
+    <button id="toggleSoundBtn">🔊 总音效开关</button>
+    <span id="soundStatus" style="font-size:0.85rem; color:#bdd3f0;">开</span>
+  </div>
+
+  <!-- 尺寸与颜色 (含正面背景图片上传) -->
+  <div class="panel">
+    <div class="control-group"><label>📏 宽</label><input type="number" id="cardWidth" value="120" min="60" max="300"></div>
+    <div class="control-group"><label>📏 高</label><input type="number" id="cardHeight" value="150" min="60" max="350"></div>
+    <div class="control-group"><label>🔤 字号</label><input type="number" id="fontSize" value="18" min="10" max="60"></div>
+    <div class="control-group">
+      <label>🎨 正面底色</label>
+      <input type="color" id="frontBgColor" value="#4f7eb3" onchange="updateColorPreviews()">
+      <div class="color-preview" id="frontBgColorPreview" style="background-color:#4f7eb3;"></div>
+    </div>
+    <div class="control-group">
+      <label>🔤 正面字色</label>
+      <input type="color" id="frontTextColor" value="#ffffff" onchange="updateColorPreviews()">
+      <div class="color-preview" id="frontTextColorPreview" style="background-color:#ffffff;"></div>
+    </div>
+    <div class="control-group">
+      <label>🎨 背面底色</label>
+      <input type="color" id="backBgColor" value="#2e3b4e" onchange="updateColorPreviews()">
+      <div class="color-preview" id="backBgColorPreview" style="background-color:#2e3b4e;"></div>
+    </div>
+    <div class="control-group">
+      <label>🔤 背面字色</label>
+      <input type="color" id="backTextColor" value="#f5e6c5" onchange="updateColorPreviews()">
+      <div class="color-preview" id="backTextColorPreview" style="background-color:#f5e6c5;"></div>
+    </div>
+    <div class="control-group">
+      <label>🖼️ 正面背景图</label>
+      <input type="file" id="frontBgImageFile" accept="image/*">
+      <button id="clearFrontBgImageBtn" style="font-size:0.7rem; padding:0.3rem 0.8rem;">清除图片</button>
+    </div>
+    <button id="applyStyleBtn">🔄 应用样式</button>
+    <button id="resetAllBtn">↩️ 全部翻回</button>
+  </div>
+
+  <!-- 自定义文字展示 -->
+  <div class="custom-text-display" id="customTextDisplay"></div>
+
+  <!-- 牌阵 -->
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- 打乱按钮 + 欧皇按钮 + 加油按钮 -->
+  <div class="shuffle-btn-container">
+    <button id="ouhuangBtn" class="ouhuang-btn">👑 欧皇</button>
+    <button id="shuffleBtnLarge" class="shuffle-btn-large">🎰 打 乱 顺 序</button>
+    <button id="cheerBtnRight" style="background:#e91e63; font-size:1.2rem; padding:0.8rem 2.5rem;">📢 加油</button>
+  </div>
+
+  <!-- 翻牌记录 -->
+  <div class="panel" style="flex-direction: column;">
+    <div style="display: flex; justify-content: space-between;">
+      <span>📝 翻牌记录 (全部翻开自动汇总)</span>
+      <button id="clearLogBtn" style="font-size:0.8rem;">清空</button>
+    </div>
+    <div class="log-box" id="logBox">暂无记录</div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const STORAGE_KEY = 'multiDeckFlips_v14';
+    let decks = [];
+    let currentDeckId = null;
+    let flipLog = [];
+    const MAX_LOG = 20;
+    let soundEnabled = true;
+    let frontBgImageDataUrl = null;
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+
+    function initAudio() {
+      if (!audioCtx && AudioContext) audioCtx = new AudioContext();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function updateColorPreviews() {
+      document.getElementById('frontBgColorPreview').style.backgroundColor = document.getElementById('frontBgColor').value;
+      document.getElementById('frontTextColorPreview').style.backgroundColor = document.getElementById('frontTextColor').value;
+      document.getElementById('backBgColorPreview').style.backgroundColor = document.getElementById('backBgColor').value;
+      document.getElementById('backTextColorPreview').style.backgroundColor = document.getElementById('backTextColor').value;
+      document.getElementById('bgColorPreview').style.backgroundColor = document.getElementById('bgColor').value;
+      document.getElementById('topTextColorPreview').style.backgroundColor = document.getElementById('topTextColor').value;
+    }
+
+    // ========== 欧皇特效：持续4秒，掉落速度快且连绵不断 ==========
+    function burstTreasures() {
+      const items = ['👑', '🏆', '🎁', '💎'];
+      const durationMs = 4200;        // 持续4.2秒
+      const intervalMs = 16;           // 每16ms生成一个，约62个/秒
+      const totalItems = Math.ceil(durationMs / intervalMs) + 30; // 约280~300个
+      
+      for (let i = 0; i < totalItems; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'celebration-item';
+          const randomItem = items[Math.floor(Math.random() * items.length)];
+          el.textContent = randomItem;
+          el.style.fontSize = (26 + Math.random() * 46) + 'px';
+          const startX = Math.random() * window.innerWidth;
+          const startY = -30 - Math.random() * 150;
+          el.style.left = startX + 'px';
+          el.style.top = startY + 'px';
+          // 随机水平飘移偏移量（通过自定义属性，但动画已有位移，无需额外）
+          document.body.appendChild(el);
+          setTimeout(() => {
+            if (el.parentNode) el.parentNode.removeChild(el);
+          }, 3500); // 元素生命周期略小于动画时长，避免残留
+        }, i * intervalMs);
+      }
+    }
+
+    // ========== 翻牌音效（时长延长版，含鸟叫风铃）==========
+    function playFlipSound() {
+      if (!soundEnabled) return;
+      if (!audioCtx) initAudio();
+      if (!audioCtx) return;
+      const type = document.getElementById('flipSoundSelect').value;
+      if (type === 'silent') return;
+      const now = audioCtx.currentTime;
+
+      const createLongTone = (freq, duration = 0.7, type='sine', gainVal=0.35) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.008, now + duration);
+        osc.start(now);
+        osc.stop(now + duration);
+      };
+      
+      const createBird = (typeBird) => {
+        const times = [0, 0.18, 0.32, 0.5, 0.68];
+        const freqs = typeBird === 'bird1' ? [2100, 1800, 2200, 1900, 2300] : [1300, 1600, 1400, 1700, 1500];
+        times.forEach((delay, idx) => {
+          setTimeout(() => {
+            if (!soundEnabled) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freqs[idx], audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.22);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.22);
+          }, delay * 1000);
+        });
+      };
+      
+      const createChime = () => {
+        const baseFreq = 1800;
+        for (let i = 0; i < 4; i++) {
+          setTimeout(() => {
+            if (!soundEnabled) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            const detune = (i * 70) - 105;
+            osc.frequency.setValueAtTime(baseFreq + detune, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.6);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.6);
+          }, i * 60);
+        }
+      };
+      
+      const createTinkle = () => {
+        createLongTone(1200, 0.5, 'sine', 0.3);
+        setTimeout(() => createLongTone(1600, 0.5, 'sine', 0.25), 300);
+        setTimeout(() => createLongTone(2100, 0.4, 'sine', 0.2), 650);
+      };
+      
+      switch(type) {
+        case 'click': createLongTone(880, 0.9, 'sine', 0.35); setTimeout(()=>createLongTone(440, 0.6, 'sine', 0.25), 450); break;
+        case 'ding': createLongTone(1250, 1.1, 'sine', 0.4); setTimeout(()=>createLongTone(1550, 0.8, 'sine', 0.3), 500); break;
+        case 'pop': createLongTone(420, 0.8, 'triangle', 0.45); break;
+        case 'cough': 
+          for(let i=0;i<2;i++){setTimeout(()=>{const gain=audioCtx.createGain(); const bufferSize=audioCtx.sampleRate*0.5; const buffer=audioCtx.createBuffer(1,bufferSize,audioCtx.sampleRate); const data=buffer.getChannelData(0); for(let i=0;i<bufferSize;i++) data[i]=Math.random()*2-1; const src=audioCtx.createBufferSource(); src.buffer=buffer; src.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.25,audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.5); src.start(); src.stop(audioCtx.currentTime+0.5);},i*700);} break;
+        case 'knock': for(let i=0;i<4;i++){setTimeout(()=>createLongTone(180,0.25,'sine',0.45),i*280);} break;
+        case 'coin': createLongTone(2100, 0.6, 'sine', 0.35); setTimeout(()=>createLongTone(1850, 0.5, 'sine', 0.3), 180); setTimeout(()=>createLongTone(1600, 0.5, 'sine', 0.25), 420); break;
+        case 'bell': createLongTone(850, 1.0, 'sine', 0.28); setTimeout(()=>createLongTone(1050, 0.9, 'sine', 0.22), 500); break;
+        case 'cling': createLongTone(1680, 1.1, 'triangle', 0.35); break;
+        case 'swish': 
+          const noiseDur=0.7; const buffer=audioCtx.createBuffer(1,audioCtx.sampleRate*noiseDur,audioCtx.sampleRate); const data=buffer.getChannelData(0); for(let i=0;i<buffer.length;i++) data[i]=Math.random()*2-1; const src=audioCtx.createBufferSource(); src.buffer=buffer; const gain=audioCtx.createGain(); src.connect(gain); gain.connect(audioCtx.destination); gain.gain.setValueAtTime(0.3,now); gain.gain.exponentialRampToValueAtTime(0.005,now+noiseDur); src.start(now); src.stop(now+noiseDur); break;
+        case 'buzz': createLongTone(230, 1.2, 'square', 0.2); break;
+        case 'laser':
+          const oscL=audioCtx.createOscillator(); const gainL=audioCtx.createGain();
+          oscL.connect(gainL); gainL.connect(audioCtx.destination);
+          oscL.type='sawtooth'; oscL.frequency.setValueAtTime(880,now); oscL.frequency.exponentialRampToValueAtTime(180,now+0.9);
+          gainL.gain.setValueAtTime(0.25,now); gainL.gain.exponentialRampToValueAtTime(0.005,now+0.9);
+          oscL.start(now); oscL.stop(now+0.9); break;
+        case 'bubble': createLongTone(620, 0.9, 'sine', 0.35); setTimeout(()=>createLongTone(510, 0.6, 'sine', 0.3), 400); break;
+        case 'woodblock': createLongTone(320, 0.7, 'triangle', 0.55); break;
+        case 'glass': createLongTone(2150, 1.2, 'sine', 0.25); break;
+        case 'ding2': createLongTone(1950, 1.0, 'sine', 0.4); break;
+        case 'camera': 
+          const noiseC=audioCtx.createBufferSource(); const bufC=audioCtx.createBuffer(1,audioCtx.sampleRate*0.4,audioCtx.sampleRate); const datC=bufC.getChannelData(0); for(let i=0;i<bufC.length;i++) datC[i]=Math.random()*2-1; noiseC.buffer=bufC; const GainC=audioCtx.createGain(); noiseC.connect(GainC); GainC.connect(audioCtx.destination); GainC.gain.setValueAtTime(0.3,now); GainC.gain.exponentialRampToValueAtTime(0.01,now+0.4); noiseC.start(now); noiseC.stop(now+0.4); setTimeout(()=>createLongTone(1100,0.5,'sine',0.3), 200); break;
+        case 'drop': createLongTone(680, 0.7, 'sine', 0.3); setTimeout(()=>createLongTone(480, 0.6, 'sine', 0.2), 250); break;
+        case 'bird1': createBird('bird1'); break;
+        case 'bird2': createBird('bird2'); break;
+        case 'chime': createChime(); break;
+        case 'tinkle': createTinkle(); break;
+        default: break;
+      }
+    }
+
+    // ========== 打乱音效：16种，时长适中 ==========
+    function playShuffleSound() {
+      if (!soundEnabled || !audioCtx) return;
+      const type = document.getElementById('shuffleSoundSelect').value;
+      if (type === 'silent') return;
+      const now = audioCtx.currentTime;
+      
+      const playTone = (freq, duration, gainVal=0.25, waveform='sine') => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = waveform;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(gainVal, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.start(now);
+        osc.stop(now + duration);
+      };
+      
+      const playNoise = (duration, intensity=0.2) => {
+        const bufferSize = audioCtx.sampleRate * duration;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+        const gain = audioCtx.createGain();
+        source.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(intensity, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        source.start(now);
+        source.stop(now + duration);
+      };
+      
+      switch(type) {
+        case 'shuffleCard':
+          for (let i = 0; i < 8; i++) {
+            setTimeout(() => playNoise(0.08, 0.15), i * 45);
+            setTimeout(() => playTone(600 + Math.random()*400, 0.1, 0.12, 'triangle'), i * 45);
+          }
+          break;
+        case 'shuffleCard2':
+          for (let i = 0; i < 12; i++) {
+            setTimeout(() => playNoise(0.05, 0.1), i * 35);
+            setTimeout(() => playTone(500 + Math.random()*500, 0.08, 0.1, 'sawtooth'), i * 35);
+          }
+          break;
+        case 'piano1':
+          [523, 587, 659, 523, 494, 440].forEach((f, idx) => setTimeout(() => playTone(f, 0.25, 0.2, 'sine'), idx * 120));
+          break;
+        case 'piano2':
+          [392, 440, 494, 523, 587, 523].forEach((f, idx) => setTimeout(() => playTone(f, 0.2, 0.2, 'sine'), idx * 100));
+          break;
+        case 'rub':
+          playNoise(0.4, 0.25);
+          for (let i = 0; i < 3; i++) setTimeout(() => playTone(300, 0.12, 0.15, 'triangle'), i * 80);
+          break;
+        case 'page':
+          playNoise(0.25, 0.18);
+          setTimeout(() => playTone(800, 0.12, 0.12, 'sine'), 100);
+          break;
+        case 'zip':
+          for (let i = 0; i < 10; i++) setTimeout(() => playTone(1200 - i*70, 0.04, 0.1, 'sawtooth'), i * 30);
+          break;
+        case 'chip':
+          for (let i = 0; i < 6; i++) setTimeout(() => { playTone(1800, 0.12, 0.18, 'sine'); playTone(1600, 0.1, 0.15, 'sine'); }, i * 70);
+          break;
+        case 'magic':
+          playTone(1200, 0.3, 0.2, 'sine');
+          setTimeout(() => playTone(1600, 0.25, 0.18, 'sine'), 150);
+          setTimeout(() => playTone(2000, 0.2, 0.15, 'sine'), 300);
+          break;
+        case 'crystal':
+          for (let i = 0; i < 5; i++) setTimeout(() => playTone(1400 + i*180, 0.22, 0.16, 'sine'), i * 90);
+          break;
+        case 'swoosh':
+          playNoise(0.35, 0.2);
+          break;
+        case 'rattle':
+          for (let i = 0; i < 10; i++) setTimeout(() => playNoise(0.05, 0.12), i * 40);
+          break;
+        case 'wind':
+          const windOsc = audioCtx.createOscillator();
+          const windGain = audioCtx.createGain();
+          windOsc.connect(windGain);
+          windGain.connect(audioCtx.destination);
+          windOsc.type = 'sine';
+          windOsc.frequency.setValueAtTime(180, now);
+          windOsc.frequency.exponentialRampToValueAtTime(80, now+0.8);
+          windGain.gain.setValueAtTime(0.2, now);
+          windGain.gain.exponentialRampToValueAtTime(0.001, now+0.8);
+          windOsc.start(now);
+          windOsc.stop(now+0.8);
+          break;
+        case 'tap':
+          for (let i = 0; i < 5; i++) setTimeout(() => playTone(300 + i*150, 0.06, 0.2, 'triangle'), i * 70);
+          break;
+        case 'slide':
+          const slideOsc = audioCtx.createOscillator();
+          const slideGain = audioCtx.createGain();
+          slideOsc.connect(slideGain);
+          slideGain.connect(audioCtx.destination);
+          slideOsc.type = 'sawtooth';
+          slideOsc.frequency.setValueAtTime(220, now);
+          slideOsc.frequency.exponentialRampToValueAtTime(800, now+0.4);
+          slideGain.gain.setValueAtTime(0.15, now);
+          slideGain.gain.exponentialRampToValueAtTime(0.001, now+0.4);
+          slideOsc.start(now);
+          slideOsc.stop(now+0.4);
+          break;
+        default: break;
+      }
+    }
+
+    function speakCheer() {
+      if (!soundEnabled) return;
+      initAudio();
+      const text = document.getElementById('cheerText').value.trim();
+      if (!text) { alert('请先在语音框中输入文字'); return; }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-TW'; utterance.rate = 0.9; utterance.pitch = 1.2;
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoice = voices.find(v => v.lang.startsWith('zh') && v.name.includes('Female')) || 
+                            voices.find(v => v.lang.startsWith('zh-TW')) || voices.find(v => v.lang.startsWith('zh'));
+        if (femaleVoice) utterance.voice = femaleVoice;
+        window.speechSynthesis.speak(utterance);
+      } else { alert(text); }
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // DOM 元素
+    const deckSelect = document.getElementById('deckSelect');
+    const deckNameInput = document.getElementById('deckName');
+    const cardCountInput = document.getElementById('cardCount');
+    const backContentsArea = document.getElementById('backContentsArea');
+    const contentCountHint = document.getElementById('contentCountHint');
+    const shuffleBtnLarge = document.getElementById('shuffleBtnLarge');
+    const ouhuangBtn = document.getElementById('ouhuangBtn');
+    const applyStyleBtn = document.getElementById('applyStyleBtn');
+    const cardGrid = document.getElementById('cardGrid');
+    const logBox = document.getElementById('logBox');
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    const clearLogBtn = document.getElementById('clearLogBtn');
+    const newDeckBtn = document.getElementById('newDeckBtn');
+    const renameDeckBtn = document.getElementById('renameDeckBtn');
+    const deleteDeckBtn = document.getElementById('deleteDeckBtn');
+    const saveDeckBtn = document.getElementById('saveDeckBtn');
+    const shareLinkBtn = document.getElementById('shareLinkBtn');
+    const widthInput = document.getElementById('cardWidth');
+    const heightInput = document.getElementById('cardHeight');
+    const fontSizeInput = document.getElementById('fontSize');
+    const frontBgColorInput = document.getElementById('frontBgColor');
+    const frontTextColorInput = document.getElementById('frontTextColor');
+    const backBgColorInput = document.getElementById('backBgColor');
+    const backTextColorInput = document.getElementById('backTextColor');
+    const customTopTextInput = document.getElementById('customTopText');
+    const applyTopTextBtn = document.getElementById('applyTopTextBtn');
+    const customTextDisplay = document.getElementById('customTextDisplay');
+    const bgColorInput = document.getElementById('bgColor');
+    const bgImageFile = document.getElementById('bgImageFile');
+    const applyBgBtn = document.getElementById('applyBgBtn');
+    const playCheerBtn = document.getElementById('playCheerBtn');
+    const cheerBtnRight = document.getElementById('cheerBtnRight');
+    const toggleSoundBtn = document.getElementById('toggleSoundBtn');
+    const soundStatus = document.getElementById('soundStatus');
+    const frontBgImageFileInput = document.getElementById('frontBgImageFile');
+    const clearFrontBgImageBtn = document.getElementById('clearFrontBgImageBtn');
+    const topTextFontSize = document.getElementById('topTextFontSize');
+    const topTextColor = document.getElementById('topTextColor');
+
+    function escapeHtml(text) { return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function getDeckIndexById(id) { return decks.findIndex(d => d.id == id); }
+    function currentDeck() { const idx = getDeckIndexById(currentDeckId); return idx !== -1 ? decks[idx] : null; }
+    function saveDecks() { localStorage.setItem(STORAGE_KEY, JSON.stringify(decks)); }
+
+    function createDeck(name = '新卡组', count = 9) {
+      const id = Date.now() + Math.random();
+      const backContents = Array(count).fill('?');
+      const backAssign = [...backContents];
+      const flipped = Array(count).fill(false);
+      decks.push({ id, name, cardCount: count, backContents, backAssign, flipped, customTopText: '', topTextFontSize: 35, topTextColor: '#f0e6c5' });
+      saveDecks();
+      return id;
+    }
+    function deleteDeck(id) {
+      decks = decks.filter(d => d.id != id);
+      if (currentDeckId == id) currentDeckId = decks.length ? decks[0].id : null;
+      saveDecks();
+      if (!currentDeckId) createDeck();
+      refreshUI();
+    }
+    function renameDeck(id, newName) { const deck = decks.find(d => d.id == id); if (deck) { deck.name = newName; saveDecks(); } }
+    function shuffleBackAssign(deck) {
+      const arr = [...deck.backContents];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      deck.backAssign = arr;
+      deck.flipped = Array(deck.cardCount).fill(false);
+      saveDecks();
+    }
+    function addLog(msg) {
+      const time = new Date().toLocaleTimeString();
+      flipLog.unshift(`[${time}] ${msg}`);
+      if (flipLog.length > MAX_LOG) flipLog.pop();
+      renderLog();
+    }
+    function renderLog() { logBox.innerHTML = flipLog.length ? flipLog.map(escapeHtml).join('<br>') : '暂无记录'; }
+    function clearLog() { flipLog = []; renderLog(); }
+    function checkAllFlippedAndRecord(deck) {
+      if (!deck || deck.cardCount === 0) return;
+      if (deck.flipped.every(f => f === true)) {
+        const summary = deck.backAssign.map((c, i) => `${i+1}-${c}`).join(', ');
+        addLog(`🎯 全部翻开汇总：${summary}`);
+      }
+    }
+    function toggleCard(index) {
+      const deck = currentDeck();
+      if (!deck || index < 0 || index >= deck.cardCount) return;
+      initAudio();
+      deck.flipped[index] = !deck.flipped[index];
+      const cardEl = document.querySelector(`.flip-card[data-index="${index}"]`);
+      if (cardEl) cardEl.classList.toggle('flipped', deck.flipped[index]);
+      playFlipSound();
+      addLog(`牌${index+1} (${deck.backAssign[index]}) ${deck.flipped[index] ? '翻开' : '翻回'}`);
+      saveDecks();
+      checkAllFlippedAndRecord(deck);
+    }
+    function renderDeckSelect() {
+      deckSelect.innerHTML = '';
+      decks.forEach(deck => {
+        const opt = document.createElement('option');
+        opt.value = deck.id;
+        opt.textContent = deck.name + ` (${deck.cardCount}张)`;
+        deckSelect.appendChild(opt);
+      });
+      if (currentDeckId) deckSelect.value = currentDeckId;
+    }
+    function refreshUI() {
+      renderDeckSelect();
+      const deck = currentDeck();
+      if (!deck) return;
+      deckNameInput.value = deck.name;
+      cardCountInput.value = deck.cardCount;
+      backContentsArea.value = deck.backContents.join('\n');
+      contentCountHint.textContent = `已输入 ${deck.backContents.length} 行，需要 ${deck.cardCount} 行`;
+      customTopTextInput.value = deck.customTopText || '';
+      topTextFontSize.value = deck.topTextFontSize || 35;
+      topTextColor.value = deck.topTextColor || '#f0e6c5';
+      updateTopTextStyle();
+      flipLog = [];
+      renderLog();
+      renderCards();
+    }
+    function updateTopTextStyle() {
+      const deck = currentDeck();
+      if (!deck) return;
+      const fontSize = deck.topTextFontSize || 35;
+      const color = deck.topTextColor || '#f0e6c5';
+      customTextDisplay.style.fontSize = fontSize + 'px';
+      customTextDisplay.style.color = color;
+      customTextDisplay.textContent = deck.customTopText || '';
+    }
+    function getStyle() {
+      return {
+        width: parseInt(widthInput.value,10) || 120,
+        height: parseInt(heightInput.value,10) || 150,
+        fontSize: parseInt(fontSizeInput.value,10) || 18,
+        frontBgColor: frontBgColorInput.value,
+        frontTextColor: frontTextColorInput.value,
+        backBgColor: backBgColorInput.value,
+        backTextColor: backTextColorInput.value
+      };
+    }
+    function renderCards() {
+      const deck = currentDeck();
+      if (!deck) { cardGrid.innerHTML = ''; return; }
+      const style = getStyle();
+      cardGrid.innerHTML = '';
+      for (let i = 0; i < deck.cardCount; i++) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'flip-card';
+        cardDiv.dataset.index = i;
+        cardDiv.style.width = style.width + 'px';
+        cardDiv.style.height = style.height + 'px';
+        if (deck.flipped[i]) cardDiv.classList.add('flipped');
+        let frontBackground = style.frontBgColor;
+        if (frontBgImageDataUrl) {
+          frontBackground = `url(${frontBgImageDataUrl}) center/cover no-repeat, ${style.frontBgColor}`;
+        }
+        cardDiv.innerHTML = `
+          <div class="flip-inner">
+            <div class="flip-front" style="background: ${frontBackground}; color:${style.frontTextColor}; font-size:${style.fontSize}px;">${i+1}</div>
+            <div class="flip-back" style="background:${style.backBgColor}; color:${style.backTextColor}; font-size:${style.fontSize}px;">${escapeHtml(deck.backAssign[i] || '?')}</div>
+          </div>
+        `;
+        cardDiv.addEventListener('click', (e) => { e.stopPropagation(); toggleCard(i); });
+        cardGrid.appendChild(cardDiv);
+      }
+    }
+    function playShuffleAnimation(callback) {
+      initAudio();
+      playShuffleSound();
+      const cards = document.querySelectorAll('.flip-card');
+      cards.forEach((card, index) => setTimeout(() => card.classList.add('shuffling'), index * 30));
+      setTimeout(() => {
+        cards.forEach(card => card.classList.remove('shuffling'));
+        if (callback) callback();
+      }, cards.length * 30 + 500);
+    }
+    function executeShuffle() {
+      const deck = currentDeck();
+      if (!deck) return;
+      updateBackFromArea();
+      playShuffleAnimation(() => {
+        shuffleBackAssign(deck);
+        renderCards();
+        addLog('🎰 背面内容已打乱');
+      });
+    }
+    function syncCountAndContents() {
+      const deck = currentDeck();
+      if (!deck) return;
+      const newCount = parseInt(cardCountInput.value, 10) || 1;
+      if (newCount < 1) cardCountInput.value = 1;
+      if (newCount > 100) cardCountInput.value = 100;
+      deck.cardCount = newCount;
+      while (deck.backContents.length < newCount) deck.backContents.push('?');
+      if (deck.backContents.length > newCount) deck.backContents = deck.backContents.slice(0, newCount);
+      while (deck.backAssign.length < newCount) deck.backAssign.push('?');
+      if (deck.backAssign.length > newCount) deck.backAssign = deck.backAssign.slice(0, newCount);
+      deck.flipped = Array(newCount).fill(false);
+      backContentsArea.value = deck.backContents.join('\n');
+      contentCountHint.textContent = `已输入 ${deck.backContents.length} 行，需要 ${deck.cardCount} 行`;
+      saveDecks();
+      renderCards();
+    }
+    function updateBackFromArea() {
+      const deck = currentDeck();
+      if (!deck) return;
+      const lines = backContentsArea.value.split('\n').map(l => l.trim()).filter(l => l !== '');
+      while (lines.length < deck.cardCount) lines.push('?');
+      deck.backContents = lines.slice(0, deck.cardCount);
+      if (deck.backAssign.length !== deck.cardCount) deck.backAssign = [...deck.backContents];
+      backContentsArea.value = deck.backContents.join('\n');
+      contentCountHint.textContent = `已输入 ${deck.backContents.length} 行，需要 ${deck.cardCount} 行`;
+      saveDecks();
+    }
+    function applyBackground() {
+      const color = bgColorInput.value;
+      const file = bgImageFile.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.body.style.background = `url(${e.target.result}) center/cover no-repeat`;
+          document.body.style.backgroundColor = color;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        document.body.style.background = color;
+      }
+    }
+    function generateShareLink() {
+      const data = { decks, currentDeckId };
+      const json = JSON.stringify(data);
+      const encoded = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
+      const url = window.location.origin + window.location.pathname + '#data=' + encoded;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('分享链接已复制！');
+        addLog('分享链接已复制');
+      }).catch(() => prompt('复制以下链接：', url));
+    }
+    function loadFromHash() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#data=')) {
+        try {
+          const encoded = hash.substring(6);
+          const json = decodeURIComponent(atob(encoded).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+          const data = JSON.parse(json);
+          if (data.decks) {
+            decks = data.decks;
+            currentDeckId = data.currentDeckId || decks[0]?.id;
+            saveDecks();
+            refreshUI();
+            addLog('已从分享链接加载');
+          }
+        } catch (e) { alert('链接解析失败'); }
+      }
+    }
+
+    // 正面背景图片
+    frontBgImageFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          frontBgImageDataUrl = ev.target.result;
+          renderCards();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    clearFrontBgImageBtn.addEventListener('click', () => {
+      frontBgImageDataUrl = null;
+      frontBgImageFileInput.value = '';
+      renderCards();
+    });
+
+    // 牌阵上方文字样式应用
+    function applyTopTextWithStyle() {
+      const deck = currentDeck();
+      if (!deck) return;
+      deck.customTopText = customTopTextInput.value.trim();
+      deck.topTextFontSize = parseInt(topTextFontSize.value, 10) || 35;
+      deck.topTextColor = topTextColor.value;
+      saveDecks();
+      updateTopTextStyle();
+      addLog(`上方文字已更新: ${deck.customTopText || '(空)'}`);
+    }
+    applyTopTextBtn.addEventListener('click', applyTopTextWithStyle);
+    
+    function previewTopText() {
+      const fontSize = parseInt(topTextFontSize.value, 10) || 35;
+      const color = topTextColor.value;
+      customTextDisplay.style.fontSize = fontSize + 'px';
+      customTextDisplay.style.color = color;
+      customTextDisplay.textContent = customTopTextInput.value.trim() || '';
+    }
+    topTextFontSize.addEventListener('input', previewTopText);
+    topTextColor.addEventListener('input', previewTopText);
+    customTopTextInput.addEventListener('input', previewTopText);
+
+    // 事件绑定
+    deckSelect.addEventListener('change', () => { currentDeckId = deckSelect.value; refreshUI(); });
+    newDeckBtn.addEventListener('click', () => { const name = prompt('卡组名称：', '新卡组'); if (!name) return; currentDeckId = createDeck(name, 9); refreshUI(); });
+    renameDeckBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; const newName = prompt('新名称：', deck.name); if (newName) { renameDeck(deck.id, newName); refreshUI(); } });
+    deleteDeckBtn.addEventListener('click', () => { if (decks.length <= 1) { alert('至少保留一个卡组'); return; } const deck = currentDeck(); if (deck && confirm(`删除“${deck.name}”？`)) { deleteDeck(deck.id); refreshUI(); } });
+    saveDeckBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; updateBackFromArea(); deck.name = deckNameInput.value; applyTopTextWithStyle(); saveDecks(); alert('卡组已保存！'); refreshUI(); });
+    shuffleBtnLarge.addEventListener('click', executeShuffle);
+    ouhuangBtn.addEventListener('click', burstTreasures);
+    applyStyleBtn.addEventListener('click', () => { updateColorPreviews(); renderCards(); });
+    resetAllBtn.addEventListener('click', () => { const deck = currentDeck(); if (!deck) return; deck.flipped = Array(deck.cardCount).fill(false); saveDecks(); renderCards(); addLog('全部翻回'); });
+    clearLogBtn.addEventListener('click', clearLog);
+    shareLinkBtn.addEventListener('click', generateShareLink);
+    applyBgBtn.addEventListener('click', applyBackground);
+    playCheerBtn.addEventListener('click', speakCheer);
+    cheerBtnRight.addEventListener('click', speakCheer);
+    toggleSoundBtn.addEventListener('click', () => { soundEnabled = !soundEnabled; soundStatus.textContent = soundEnabled ? '开' : '关'; toggleSoundBtn.textContent = soundEnabled ? '🔊 总音效开关' : '🔇 总音效开关'; });
+    cardCountInput.addEventListener('change', syncCountAndContents);
+    backContentsArea.addEventListener('blur', updateBackFromArea);
+    deckNameInput.addEventListener('change', () => { const deck = currentDeck(); if (deck) { deck.name = deckNameInput.value; saveDecks(); renderDeckSelect(); } });
+
+    updateColorPreviews();
+    bgColorInput.addEventListener('input', () => { document.getElementById('bgColorPreview').style.backgroundColor = bgColorInput.value; });
+    document.addEventListener('click', initAudio, { once: true });
+
+    function init() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try { decks = JSON.parse(stored); } catch(e) { decks = []; }
+      }
+      if (!decks.length) {
+        currentDeckId = createDeck('示例卡组', 9);
+      } else {
+        currentDeckId = decks[0].id;
+      }
+      loadFromHash();
+      refreshUI();
+    }
+    init();
+  })();
+</script>
+</body>
+</html>
